@@ -1339,7 +1339,7 @@ class ACEStepPipeline:
         pred_wavs = [pred_wav.cpu().float() for pred_wav in pred_wavs]
         for i in tqdm(range(bs)):
             output_audio_path = self.save_wav_file(
-                pred_wavs[i], i, sample_rate=sample_rate
+                pred_wavs[i], i, sample_rate=sample_rate, save_path=save_path
             )
             output_audio_paths.append(output_audio_path)
         return output_audio_paths
@@ -1351,13 +1351,12 @@ class ACEStepPipeline:
             logger.warning("save_path is None, using default path ./outputs/")
             base_path = f"./outputs"
             ensure_directory_exists(base_path)
-        else:
-            base_path = save_path
-            ensure_directory_exists(base_path)
-
-        output_path_wav = (
-            f"{base_path}/output_{time.strftime('%Y%m%d%H%M%S')}_{idx}.wav"
-        )
+            output_path_wav = (
+                f"{base_path}/output_{time.strftime('%Y%m%d%H%M%S')}_{idx}.wav"
+            )
+        else:                    
+            output_path_wav=save_path
+        
         target_wav = target_wav.float()
         torchaudio.save(
             output_path_wav, target_wav, sample_rate=sample_rate, format=format
